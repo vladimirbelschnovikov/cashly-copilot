@@ -178,8 +178,8 @@ if "messages" not in st.session_state:
 if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = []
 
-# Your n8n webhook URL
-N8N_WEBHOOK_URL = "https://n8n.gocashly.io/webhook/a7465ca5-ca19-4e10-aae3-a9648fa8b50f/chat"
+# n8n webhook URL to start the chat
+N8N_WEBHOOK_URL = "https://n8n.gocashly.io/webhook-test/cashly-copilot"
 
 def extract_text_from_pdf(pdf_file):
     """Extract text from a PDF file"""
