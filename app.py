@@ -63,16 +63,7 @@ st.markdown("""
         margin-bottom: 0.2rem !important;
     }
     
-    /* Messages container */
-    .messages-container {
-        height: 60vh;
-        overflow-y: auto;
-        border: 1px solid rgba(0, 59, 163, 0.1);
-        border-radius: 8px;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-        background-color: white;
-    }
+
     
     /* Message styling for Streamlit's built-in chat components */
     .stChatMessage {
