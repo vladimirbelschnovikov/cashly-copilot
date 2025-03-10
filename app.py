@@ -224,9 +224,29 @@ def send_message_to_agent(message_text, uploaded_files=None):
     try:
         response = requests.post(N8N_WEBHOOK_URL, json=payload)
         response.raise_for_status()  # Raise exception for HTTP errors
-        return response.json().get("response", "No response from Cashly Copilot")
+        
+        # Check response content
+        content_type = response.headers.get('Content-Type', '')
+        
+        if 'application/json' in content_type:
+            # JSON response
+            try:
+                response_data = response.json()
+                if isinstance(response_data, dict):
+                    return response_data.get("response", str(response_data))
+                else:
+                    return str(response_data)
+            except ValueError:
+                # Invalid JSON
+                return f"Received invalid JSON response: {response.text[:100]}..."
+        else:
+            # Non-JSON response (text, etc)
+            return response.text
+            
+    except requests.exceptions.RequestException as e:
+        return f"Network error communicating with Cashly Copilot: {str(e)}"
     except Exception as e:
-        return f"Error communicating with Cashly Copilot: {str(e)}"
+        return f"Error processing response from Cashly Copilot: {str(e)}"
 
 # Logo and title
 col1, col2 = st.columns([1, 4])
