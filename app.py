@@ -318,4 +318,4 @@ if send_button and (user_input or uploaded_files):
     st.session_state.messages.append({"role": "assistant", "content": agent_response})
     
     # Clear the input
-    st.experimental_rerun()
+    st.rerun()
