@@ -34,46 +34,75 @@ st.markdown("""
     /* Header styling */
     header {
         background-color: var(--cashly-primary) !important;
+        margin-bottom: 0 !important;
     }
     
-    /* Chat container */
-    .chat-container {
-        display: flex;
-        flex-direction: column;
-        height: 70vh;
-        border-radius: 8px;
-        background-color: var(--cashly-white);
-        padding: 0.5rem;
+    /* Reduce top padding aggressively */
+    .main .block-container {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        max-width: 100%;
+    }
+    
+    /* Remove any default margins from the title and subtitle */
+    h2, p {
+        margin-top: 0 !important;
+        margin-bottom: 0.3rem !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Target Streamlit's vertical spacing between components */
+    [data-testid="stVerticalBlock"] {
+        gap: 0 !important;
+    }
+    
+    /* Additional override for Streamlit's default spacing */
+    .element-container {
+        margin-bottom: 0.2rem !important;
+    }
+    
+    /* Messages container */
+    .messages-container {
+        height: 60vh;
         overflow-y: auto;
         border: 1px solid rgba(0, 59, 163, 0.1);
+        border-radius: 8px;
+        padding: 0.5rem;
         margin-bottom: 1rem;
+        background-color: white;
     }
     
-    /* Message bubbles */
-    .user-message, .bot-message {
-        padding: 0.7rem 1rem;
-        border-radius: 1rem;
-        margin: 0.3rem 0;
-        max-width: 85%;
-        font-size: 0.9rem;
-        line-height: 1.35;
-        word-wrap: break-word;
+    /* Message styling for Streamlit's built-in chat components */
+    .stChatMessage {
+        background-color: transparent !important;
+        padding: 0 !important;
+        margin: 0.3rem 0 !important;
     }
     
-    .user-message {
-        background-color: var(--cashly-secondary);
-        color: var(--cashly-white);
-        align-self: flex-end;
-        margin-left: auto;
-        border-bottom-right-radius: 0.3rem;
+    .stChatMessage [data-testid="stChatMessageContent"] {
+        padding: 0.7rem 1rem !important;
+        border-radius: 1rem !important;
+        max-width: 85% !important;
+        font-size: 0.9rem !important;
+        line-height: 1.35 !important;
     }
     
-    .bot-message {
-        background-color: var(--cashly-light);
-        color: #333333;
-        align-self: flex-start;
-        margin-right: auto;
-        border-bottom-left-radius: 0.3rem;
+    /* User message styling */
+    .stChatMessage[data-testid="stChatMessageUser"] [data-testid="stChatMessageContent"] {
+        background-color: #4a8cff !important;
+        color: white !important;
+        margin-left: auto !important;
+        border-bottom-right-radius: 0.3rem !important;
+    }
+    
+    /* Assistant message styling */
+    .stChatMessage:not([data-testid="stChatMessageUser"]) [data-testid="stChatMessageContent"] {
+        background-color: #efefef !important;
+        color: #333333 !important;
+        margin-right: auto !important;
+        border-bottom-left-radius: 0.3rem !important;
     }
     
     /* File upload styling */
@@ -126,28 +155,11 @@ st.markdown("""
         border-color: rgba(0, 59, 163, 0.2);
     }
     
-    /* Remove padding */
-    .main .block-container {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        max-width: 100%;
-    }
-    
     /* Hide streamlit branding */
     footer {display: none !important;}
     #MainMenu {visibility: hidden;}
     .stDeployButton {display: none !important;}
     [data-testid="stToolbar"] {display: none !important;}
-    
-    /* Make chat messages take more vertical space */
-    [data-testid="stVerticalBlock"] {
-        gap: 0rem !important;
-    }
-    
-    /* Reduced margins */
-    .element-container {
-        margin-bottom: 0.5rem;
-    }
     
     /* Scrollbar styling */
     ::-webkit-scrollbar {
@@ -167,43 +179,7 @@ st.markdown("""
     
     ::-webkit-scrollbar-thumb:hover {
         background: var(--cashly-secondary);
-            
-             /* Additional fixes for empty space issue */
-    /* Reduce top padding even more aggressively */
-    .main .block-container {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
     }
-    
-    /* Target Streamlit header elements to reduce their margins */
-    header {
-        margin-bottom: 0 !important;
-    }
-    
-    /* Remove any default margins from the title and subtitle */
-    h2, p {
-        margin-top: 0 !important;
-        margin-bottom: 0.3rem !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        line-height: 1.2 !important;
-    }
-    
-    /* Make sure the chat container starts immediately after header */
-    .chat-container {
-        margin-top: 0.3rem !important;
-    }
-    
-    /* Target Streamlit's vertical spacing between components */
-    .stVerticalBlock {
-        gap: 0 !important;
-    }
-    
-    /* Additional override for Streamlit's default spacing */
-    .element-container {
-        margin-bottom: 0.2rem !important;
-    }
-    
 </style>
 """, unsafe_allow_html=True)
 
@@ -284,39 +260,38 @@ def send_message_to_agent(message_text, uploaded_files=None):
     except Exception as e:
         return f"Error processing response from Cashly Copilot: {str(e)}"
 
-# Logo and title
-col1, col2 = st.columns([1, 4])
-with col1:
-    st.markdown("""
-    <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 128 128">
-            <circle cx="64" cy="64" r="64" fill="#003ba3"/>
-            <path d="M92 56c0-13.255-10.745-24-24-24H44c-13.255 0-24 10.745-24 24v16c0 13.255 10.745 24 24 24h2v16l16-16h6c13.255 0 24-10.745 24-24V56z" fill="#4a8cff"/>
-            <circle cx="46" cy="64" r="6" fill="#ffffff"/>
-            <circle cx="64" cy="64" r="6" fill="#ffffff"/>
-            <circle cx="82" cy="64" r="6" fill="#ffffff"/>
-        </svg>
+# More compact logo and title
+st.markdown("""
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.3rem;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 128 128">
+        <circle cx="64" cy="64" r="64" fill="#003ba3"/>
+        <path d="M92 56c0-13.255-10.745-24-24-24H44c-13.255 0-24 10.745-24 24v16c0 13.255 10.745 24 24 24h2v16l16-16h6c13.255 0 24-10.745 24-24V56z" fill="#4a8cff"/>
+        <circle cx="46" cy="64" r="6" fill="#ffffff"/>
+        <circle cx="64" cy="64" r="6" fill="#ffffff"/>
+        <circle cx="82" cy="64" r="6" fill="#ffffff"/>
+    </svg>
+    <div>
+        <h2 style="color: #003ba3; margin: 0; font-size: 1.3rem;">Cashly Copilot</h2>
+        <p style="font-size: 0.7rem; color: #666; margin: 0;">Your AI financial assistant</p>
     </div>
-    """, unsafe_allow_html=True)
-with col2:
-    st.markdown('<h2 style="color: #003ba3; margin-bottom: 0;">Cashly Copilot</h2>', unsafe_allow_html=True)
-    st.markdown('<p style="font-size: 0.9rem; color: #666; margin-top: 0;">Your AI financial assistant</p>', unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
 
-# Chat container
-st.markdown('<div class="chat-container" id="chat-container">', unsafe_allow_html=True)
-
-# Display chat messages
-for i, msg in enumerate(st.session_state.messages):
-    if msg["role"] == "user":
-        message_html = f'<div class="user-message">{msg["content"]}</div>'
-        if "files" in msg:
-            for file in msg["files"]:
-                message_html += f'<div class="file-attachment">📎 {file}</div>'
-        st.markdown(message_html, unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="bot-message">{msg["content"]}</div>', unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
+# Create a container for messages with fixed height
+chat_area = st.container()
+with chat_area:
+    # Add custom class
+    st.markdown('<div class="messages-container">', unsafe_allow_html=True)
+    
+    # Display messages using Streamlit's built-in message function
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.write(msg["content"])
+            if "files" in msg:
+                for file in msg["files"]:
+                    st.write(f"📎 {file}")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # File uploader
 uploaded_files = st.file_uploader("Upload PDF or text files", 
@@ -337,9 +312,10 @@ with col2:
 st.markdown("""
 <script>
     function scrollToBottom() {
-        const chatContainer = document.getElementById('chat-container');
-        if (chatContainer) {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+        const messageContainers = document.getElementsByClassName('messages-container');
+        if (messageContainers.length > 0) {
+            const container = messageContainers[0];
+            container.scrollTop = container.scrollHeight;
         }
     }
     
