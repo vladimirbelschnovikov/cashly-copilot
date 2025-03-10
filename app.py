@@ -167,7 +167,43 @@ st.markdown("""
     
     ::-webkit-scrollbar-thumb:hover {
         background: var(--cashly-secondary);
+            
+             /* Additional fixes for empty space issue */
+    /* Reduce top padding even more aggressively */
+    .main .block-container {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
     }
+    
+    /* Target Streamlit header elements to reduce their margins */
+    header {
+        margin-bottom: 0 !important;
+    }
+    
+    /* Remove any default margins from the title and subtitle */
+    h2, p {
+        margin-top: 0 !important;
+        margin-bottom: 0.3rem !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Make sure the chat container starts immediately after header */
+    .chat-container {
+        margin-top: 0.3rem !important;
+    }
+    
+    /* Target Streamlit's vertical spacing between components */
+    .stVerticalBlock {
+        gap: 0 !important;
+    }
+    
+    /* Additional override for Streamlit's default spacing */
+    .element-container {
+        margin-bottom: 0.2rem !important;
+    }
+    
 </style>
 """, unsafe_allow_html=True)
 
