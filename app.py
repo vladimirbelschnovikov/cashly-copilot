@@ -230,6 +230,8 @@ def send_message_to_agent(message_text, uploaded_files=None):
         
         # Check response content
         content_type = response.headers.get('Content-Type', '')
+
+        print(content_type)
         
         if 'application/json' in content_type:
             # JSON response
