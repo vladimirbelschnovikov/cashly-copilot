@@ -277,7 +277,9 @@ with chat_area:
     # Display messages using Streamlit's built-in message function
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
-            st.write(msg["content"])
+            # Clean message content before displaying
+            cleaned_content = msg["content"].strip()
+            st.write(cleaned_content)
             if "files" in msg:
                 for file in msg["files"]:
                     st.write(f"📎 {file}")
