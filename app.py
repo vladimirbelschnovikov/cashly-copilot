@@ -182,7 +182,7 @@ if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = []
 
 # n8n webhook URL to start the chat
-N8N_WEBHOOK_URL = "https://n8n.gocashly.io/webhook-test/cashly-copilot"
+N8N_WEBHOOK_URL = "https://n8n.gocashly.io/webhook/cashly-copilot"
 
 def extract_text_from_pdf(pdf_file):
     """Extract text from a PDF file"""
@@ -230,8 +230,6 @@ def send_message_to_agent(message_text, uploaded_files=None):
         
         # Check response content
         content_type = response.headers.get('Content-Type', '')
-
-        print(content_type)
         
         if 'application/json' in content_type:
             # JSON response
